@@ -1,58 +1,1470 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<title>Ecommilan Tool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ecommilan Shopify Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #171a21;
+      --soft: #202530;
+      --line: #2a3140;
+      --text: #ffffff;
+      --muted: #b8c0cf;
+      --yellow: #f5ba42;
+      --yellow-2: #ffd36d;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #60a5fa;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(245,186,66,.18), transparent 25%),
+        radial-gradient(circle at top right, rgba(96,165,250,.12), transparent 20%),
+        linear-gradient(180deg, #0d1015 0%, #11151d 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: #000000;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.05;
+      font-weight: 800;
+      max-width: 760px;
+      color: #ffffff;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar,
+    .panel {
+      background: rgba(23,26,33,.92);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      padding: 14px;
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .tab-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      padding: 16px 16px;
+      border-radius: 18px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: .2s ease;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.06);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(245,186,66,.18), rgba(245,186,66,.06));
+      border-color: rgba(245,186,66,.35);
+      color: #ffffff;
+    }
+
+    .tab-title {
+      display: block;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .tab-sub {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hero h1,
+    .hero p,
+    .tab-title,
+    .tab-btn.active .tab-title,
+    .tab-btn.active .tab-sub,
+    .shopify-card h3,
+    .title-row h2,
+    .tip-card h3,
+    .score-card h3,
+    .result-card h3 {
+      color: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .panel {
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title-row h2 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .title-row p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .field,
+    .result-card,
+    .tip-card,
+    .shopify-card,
+    .score-card,
+    .idea-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .field {
+      padding: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: #0f131a !important;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      caret-color: #ffffff !important;
+      border: 1px solid #2e384b;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+      transition: .2s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      box-shadow: none;
+      opacity: 1 !important;
+    }
+
+    .field input[type="number"] {
+      appearance: textfield;
+      -webkit-appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .field input[type="number"]::-webkit-outer-spin-button,
+    .field input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: inner-spin-button;
+      opacity: 1;
+      filter: invert(1);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #94a3b8;
+      opacity: 1;
+    }
+
+    .field input:-webkit-autofill,
+    .field textarea:-webkit-autofill,
+    .field select:-webkit-autofill {
+      -webkit-text-fill-color: #ffffff !important;
+      box-shadow: 0 0 0px 1000px #0f131a inset !important;
+      transition: background-color 9999s ease-out 0s;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(245,186,66,.65);
+      box-shadow: 0 0 0 4px rgba(245,186,66,.12);
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+
+    .field textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: .2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--yellow), var(--yellow-2));
+      color: #111;
+      box-shadow: 0 10px 24px rgba(245,186,66,.2);
+    }
+
+    .btn-secondary {
+      background: #0f131a;
+      color: #ffffff;
+      border: 1px solid var(--line);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .results,
+    .kpi-grid {
+      margin-top: 18px;
+    }
+
+    .results {
+      display: grid;
+      gap: 14px;
+    }
+
+    .idea-card,
+    .result-card,
+    .score-card,
+    .tip-card {
+      padding: 18px;
+    }
+
+    .idea-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -.02em;
+      color: #ffffff;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .muted {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .copy-btn {
+      margin-top: 14px;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(255,255,255,.06);
+      color: #ffffff;
+      font-family: inherit;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      margin-top: 8px;
+      color: #ffffff;
+    }
+
+    .good { color: #34d399; }
+    .neutral { color: #fbbf24; }
+    .bad { color: #f87171; }
+
+    .score-big {
+      font-size: 42px;
+      font-weight: 800;
+      margin: 8px 0 10px;
+      color: #ffffff;
+    }
+
+    .progress {
+      width: 100%;
+      height: 14px;
+      background: #0f131a;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin: 12px 0 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #22c55e);
+      transition: width .35s ease;
+    }
+
+    .check {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #11161f;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .shopify-card {
+      margin-top: 22px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      background: linear-gradient(180deg, rgba(8,8,8,.98), rgba(18,18,18,.98));
+      border: 1px solid rgba(34,197,94,.34);
+    }
+
+    .shopify-card p {
+      margin: 0;
+      color: #e6ebf4;
+      line-height: 1.65;
+      font-size: 14px;
+      max-width: 720px;
+    }
+
+    .shopify-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-width: 220px;
+      text-decoration: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #22c55e, #16a34a);
+      color: #ffffff;
+      font-weight: 800;
+      border: 1px solid rgba(34,197,94,.75);
+      box-shadow: 0 12px 28px rgba(34,197,94,.28);
+    }
+
+    .shopify-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(34,197,94,.34);
+      filter: brightness(1.03);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .shopify-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 14px; }
+      .hero, .panel { padding: 18px; }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .title-row {
+        flex-direction: column;
+      }
+      .shopify-link {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Ecommilan Toolkit</div>
+      <h1>Mini softver za eCommerce ideje, profit, validaciju niše i opis proizvoda</h1>
+      <p>Iskoristi alate ispod da lakše dođeš do boljeg imena za shop, jasnije računice, validacije ideje i gotovog opisa proizvoda za product page.</p>
+    </section>
 
-<body style="background:#111;color:white;font-family:sans-serif;padding:40px">
+    <div class="layout">
+      <aside class="sidebar">
+        <button class="tab-btn active" data-tab="names">
+          <span class="tab-title">Generator imena shopa</span>
+          <span class="tab-sub">Brzo dobijaš brandable ideje za novi shop</span>
+        </button>
+        <button class="tab-btn" data-tab="profit">
+          <span class="tab-title">Profit kalkulator</span>
+          <span class="tab-sub">Računaj realniji profit i break even</span>
+        </button>
+        <button class="tab-btn" data-tab="niche">
+          <span class="tab-title">Niche validator</span>
+          <span class="tab-sub">Brza analiza potencijala proizvoda / niše</span>
+        </button>
+        <button class="tab-btn" data-tab="copy">
+          <span class="tab-title">Opis proizvoda</span>
+          <span class="tab-sub">Napiši gotov opis za product page</span>
+        </button>
+      </aside>
 
-<h1>AI Tool</h1>
+      <main class="panel">
+        <section class="tab-content active" id="names">
+          <div class="title-row">
+            <div>
+              <h2>Generator imena za novi shop</h2>
+              <p>Unesi proizvod, publiku, ton brenda i tržište. Dobićeš kombinaciju brandable i usable imena koja zvuče bolje nego generički nazivi.</p>
+            </div>
+          </div>
 
-<h3>Generator imena</h3>
-<input id="product" placeholder="proizvod"><br><br>
-<button onclick="genName()">Generiši</button>
-<pre id="nameOut"></pre>
+          <div class="grid">
+            <div class="field">
+              <label for="productType">Koji tip proizvoda / niše testiraš?</label>
+              <input id="productType" type="text" placeholder="npr. proizvodi za dom, beauty gadget, auto oprema" />
+            </div>
+            <div class="field">
+              <label for="audience">Ko je tvoja publika?</label>
+              <input id="audience" type="text" placeholder="npr. žene 25–45, vozači, roditelji, vlasnici kućnih ljubimaca" />
+            </div>
+            <div class="field">
+              <label for="tone">Ton brenda</label>
+              <select id="tone">
+                <option value="modern">Moderan</option>
+                <option value="premium">Premium</option>
+                <option value="minimal">Minimal</option>
+                <option value="bold">Agresivan</option>
+                <option value="friendly">Pristupačan</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="market">Tržište</label>
+              <select id="market">
+                <option value="balkans">Srbija / Balkan</option>
+                <option value="eu">EU generalno</option>
+                <option value="us">US / International</option>
+              </select>
+            </div>
+          </div>
 
-<hr>
+          <div class="actions">
+            <button class="btn btn-primary" id="generateNamesBtn">Generiši imena</button>
+            <button class="btn btn-secondary" id="surpriseNamesBtn">Daj mi random ideje</button>
+          </div>
 
-<h3>Opis proizvoda</h3>
-<input id="copyProduct" placeholder="naziv"><br><br>
-<button onclick="genCopy()">Napiši opis</button>
-<pre id="copyOut"></pre>
+          <div class="results" id="nameResults"></div>
 
-<script>
-async function callAI(prompt) {
-  const res = await fetch("/api/ai", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ prompt })
-  });
+          <div class="shopify-card">
+            <div>
+              <h3>Pokreni shop odmah</h3>
+              <p>Kada pronađeš pravo ime, sledeći korak je da ga pretvoriš u pravi shop i kreneš da gradiš svoj brend.</p>
+            </div>
+            <a class="shopify-link" href="https://shopify.pxf.io/ecommilan" target="_blank" rel="noopener sponsored">Pokreni Shop za 1$ za 3 meseca (Ušteda 100$)</a>
+          </div>
+        </section>
 
-  const data = await res.json();
-  return data.text;
-}
+        <section class="tab-content" id="profit">
+          <div class="title-row">
+            <div>
+              <h2>Profit kalkulator</h2>
+              <p>Ubaci prodajnu cenu, nabavku, dostavu, ad cost i procenat povrata. Dobićeš realniji pogled na profit, ne samo lep broj na papiru.</p>
+            </div>
+          </div>
 
-async function genName() {
-  const product = document.getElementById("product").value;
+          <div class="grid">
+            <div class="field">
+              <label for="sellPrice">Prodajna cena</label>
+              <input id="sellPrice" type="number" placeholder="2990" />
+            </div>
+            <div class="field">
+              <label for="productCost">Cena proizvoda / nabavka</label>
+              <input id="productCost" type="number" placeholder="850" />
+            </div>
+            <div class="field">
+              <label for="shippingCost">Tvoj trošak dostave</label>
+              <input id="shippingCost" type="number" placeholder="360" />
+            </div>
+            <div class="field">
+              <label for="adCost">Prosečan trošak reklame po porudžbini</label>
+              <input id="adCost" type="number" placeholder="700" />
+            </div>
+            <div class="field">
+              <label for="otherCost">Ostali troškovi po porudžbini</label>
+              <input id="otherCost" type="number" placeholder="120" />
+            </div>
+            <div class="field">
+              <label for="returnRate">Procena povrata (%)</label>
+              <input id="returnRate" type="number" placeholder="10" />
+            </div>
+          </div>
 
-  const prompt = `Daj 5 imena za ecommerce shop za ${product}`;
+          <div class="actions">
+            <button class="btn btn-primary" id="calcProfitBtn">Izračunaj profit</button>
+          </div>
 
-  const text = await callAI(prompt);
+          <div class="kpi-grid">
+            <div class="result-card">
+              <h3>Bruto marža</h3>
+              <div class="kpi-value" id="grossMargin">0</div>
+              <div class="muted">Cena minus nabavka i dostava</div>
+            </div>
+            <div class="result-card">
+              <h3>Neto profit</h3>
+              <div class="kpi-value" id="netProfit">0</div>
+              <div class="muted">Sa procenom reklame, ostalog i povrata</div>
+            </div>
+            <div class="result-card">
+              <h3>Profit margin</h3>
+              <div class="kpi-value" id="profitMargin">0%</div>
+              <div class="muted">Koliko ostaje procentualno</div>
+            </div>
+            <div class="result-card">
+              <h3>Break even CPA</h3>
+              <div class="kpi-value" id="breakevenCPA">0</div>
+              <div class="muted">Koliko max smeš da platiš akviziciju</div>
+            </div>
+          </div>
 
-  document.getElementById("nameOut").textContent = text;
-}
+          <div class="tip-card" id="profitInsight" style="margin-top:16px;">
+            <h3>Uvid</h3>
+            <div class="muted">Ovde će se pojaviti kratak zaključak na osnovu računice.</div>
+          </div>
 
-async function genCopy() {
-  const product = document.getElementById("copyProduct").value;
+          <div class="shopify-card">
+            <div>
+              <h3>Imaš računicu? Napravi test shop.</h3>
+              <p>Kada brojevi imaju smisla, sledeći korak je da postaviš proizvod, stranicu i ponudu na mestu gde možeš odmah da kreneš sa testom.</p>
+            </div>
+            <a class="shopify-link" href="https://shopify.pxf.io/ecommilan" target="_blank" rel="noopener sponsored">Pokreni Shop za 1$ za 3 meseca (Ušteda 100$)</a>
+          </div>
+        </section>
 
-  const prompt = `Napiši prodajni opis proizvoda: ${product}`;
+        <section class="tab-content" id="niche">
+          <div class="title-row">
+            <div>
+              <h2>Niche validator</h2>
+              <p>Oceni jačinu problema, wow efekat, maržu, konkurenciju, repeat potential i content potential. Sistem će dati ukupan niche score i brzu analizu.</p>
+            </div>
+          </div>
 
-  const text = await callAI(prompt);
+          <div class="grid">
+            <div class="field">
+              <label for="problemLevel">Koliko jak problem rešava? (1–10)</label>
+              <input id="problemLevel" type="number" placeholder="8" />
+            </div>
+            <div class="field">
+              <label for="wowFactor">Koliko jak wow / demo faktor ima? (1–10)</label>
+              <input id="wowFactor" type="number" placeholder="7" />
+            </div>
+            <div class="field">
+              <label for="marginLevel">Koliko zdrava deluje marža? (1–10)</label>
+              <input id="marginLevel" type="number" placeholder="8" />
+            </div>
+            <div class="field">
+              <label for="competitionLevel">Koliko je konkurencija jaka? (1–10)</label>
+              <input id="competitionLevel" type="number" placeholder="5" />
+            </div>
+            <div class="field">
+              <label for="repeatPotential">Repeat kupovina / upsell potencijal? (1–10)</label>
+              <input id="repeatPotential" type="number" placeholder="6" />
+            </div>
+            <div class="field">
+              <label for="contentPotential">Koliko lako ide u kreativu? (1–10)</label>
+              <input id="contentPotential" type="number" placeholder="9" />
+            </div>
+          </div>
 
-  document.getElementById("copyOut").textContent = text;
-}
-</script>
+          <div class="actions">
+            <button class="btn btn-primary" id="validateNicheBtn">Validiraj niche</button>
+          </div>
 
+          <div class="score-card" style="margin-top:18px;">
+            <h3>Ukupan niche score</h3>
+            <div class="score-big" id="nicheScore">0/100</div>
+            <div class="progress">
+              <div class="progress-fill" id="scoreFill"></div>
+            </div>
+            <div class="muted" id="scoreSummary">Ovde će se pojaviti kratak zaključak o potencijalu.</div>
+          </div>
+
+          <div class="tip-card" style="margin-top:16px;">
+            <h3>Brza analiza</h3>
+            <div class="results" id="nicheChecklist"></div>
+          </div>
+
+          <div class="shopify-card">
+            <div>
+              <h3>Ima smisla? Podigni test shop.</h3>
+              <p>Ako score izgleda dobro, pređi sa ideje na akciju, postavi proizvod i testiraj tržište dok imaš dobar momentum.</p>
+            </div>
+            <a class="shopify-link" href="https://shopify.pxf.io/ecommilan" target="_blank" rel="noopener sponsored">Pokreni Shop za 1$ za 3 meseca (Ušteda 100$)</a>
+          </div>
+        </section>
+
+        <section class="tab-content" id="copy">
+          <div class="title-row">
+            <div>
+              <h2>Generator opisa proizvoda</h2>
+              <p>Unesi osnovne informacije i alat će napisati gotov opis proizvoda koji može odmah da se kopira na product page.</p>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="copyProduct">Naziv proizvoda</label>
+              <input id="copyProduct" type="text" placeholder="npr. magnetni držač telefona" />
+            </div>
+            <div class="field">
+              <label for="copyAudience">Za koga je proizvod?</label>
+              <input id="copyAudience" type="text" placeholder="npr. za vozače, porodice, dekoraciju doma, kancelariju" />
+            </div>
+            <div class="field">
+              <label for="copyAngle">Glavni ugao prodaje</label>
+              <input id="copyAngle" type="text" placeholder="npr. praktičnost, sigurnost, dekoracija, wow efekat" />
+            </div>
+            <div class="field">
+              <label for="copyTone">Stil opisa</label>
+              <select id="copyTone">
+                <option value="prodajni">Prodajni</option>
+                <option value="premium">Premium</option>
+                <option value="direktan">Direktan</option>
+                <option value="topao">Topao</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:16px;">
+            <label for="copyBenefits">Ključne karakteristike / benefiti (svaki u novom redu)</label>
+            <textarea id="copyBenefits" placeholder="npr.
+12 različitih nastavaka
+Jednostavno menjanje slajdova
+Jasne i upečatljive projekcije
+Pogodno za praznike i proslave"></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="generateCopyBtn">Napiši opis</button>
+            <button class="btn btn-secondary" id="copyOutputBtn">Kopiraj opis</button>
+          </div>
+
+          <div class="field" style="margin-top:16px;">
+            <label for="copyOutput">Gotov opis proizvoda</label>
+            <textarea id="copyOutput" placeholder="Ovde će se pojaviti generisan opis."></textarea>
+          </div>
+
+          <div class="shopify-card">
+            <div>
+              <h3>Opis je spreman. Sledeći korak je shop.</h3>
+              <p>Uzmi gotov opis, ubaci ga na product page i pretvori posetu u jasniju i ubedljiviju ponudu za kupca.</p>
+            </div>
+            <a class="shopify-link" href="https://shopify.pxf.io/ecommilan" target="_blank" rel="noopener sponsored">Pokreni Shop za 1$ za 3 meseca (Ušteda 100$)</a>
+          </div>
+        </section>
+
+        <div class="footer-note">Ovaj alat radi direktno u browseru i može da se embeduje na sajt kao posebna stranica ili preko iframe-a.</div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    const prefixes = {
+      premium: ['Vel', 'Luxe', 'Novi', 'Aure', 'Vanta', 'Elara'],
+      modern: ['Neo', 'Nexa', 'Vero', 'Zeno', 'Axo', 'Nori'],
+      minimal: ['Mono', 'Linea', 'Noma', 'Sora', 'Mira', 'Evo'],
+      bold: ['Volt', 'Raze', 'Onyx', 'Vexo', 'Koda', 'Zura'],
+      friendly: ['Mila', 'Luma', 'Nola', 'Bela', 'Zeno', 'Tiva']
+    };
+
+    const suffixes = {
+      balkans: ['era', 'ora', 'ium', 'ica', 'ino', 'ara'],
+      eu: ['a', 'io', 'ium', 'ora', 'era', 'elle'],
+      us: ['ly', 'io', 'sy', 'ra', 'ro', 'va']
+    };
+
+    const vibeWords = {
+      premium: ['premium', 'sofisticirano', 'čisto'],
+      modern: ['moderno', 'brzo', 'digitalno'],
+      minimal: ['minimalno', 'čisto', 'elegantno'],
+      bold: ['jako', 'upadljivo', 'direktno'],
+      friendly: ['toplo', 'pristupačno', 'prijateljski']
+    };
+
+    function titleCase(text) {
+      return text
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('');
+    }
+
+    function normalizeWord(word) {
+      return (word || '')
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9čćžšđ]/g, '')
+        .trim();
+    }
+
+    function extractKeywords(text) {
+      const stopWords = ['za', 'na', 'od', 'u', 'sa', 'bez', 'i', 'je', 'su', 'koji', 'koja', 'koje', 'the', 'and', 'for', 'with'];
+      return (text || '')
+        .toLowerCase()
+        .split(/[\s,./-]+/)
+        .map(normalizeWord)
+        .filter(word => word.length > 2 && !stopWords.includes(word))
+        .slice(0, 8);
+    }
+
+    function makeBrandPart(word) {
+      const clean = normalizeWord(word);
+      if (!clean) return '';
+      if (clean.length <= 4) return titleCase(clean);
+      return titleCase(clean.slice(0, Math.min(5, clean.length)));
+    }
+
+    function makeAltBrandPart(word) {
+      const clean = normalizeWord(word);
+      if (!clean) return '';
+      if (clean.length <= 3) return titleCase(clean);
+      const start = Math.max(0, Math.floor(clean.length / 2) - 1);
+      return titleCase(clean.slice(start, start + 3));
+    }
+
+    function brandify(name) {
+      return (name || '')
+        .replace(/[^a-zA-Z0-9čćžšđ]/g, '')
+        .replace(/(.)\1{2,}/g, '$1$1')
+        .replace(/^./, m => m.toUpperCase());
+    }
+
+    function uniqueIdeas(items, count = 6) {
+      const seen = new Set();
+      return items.filter(item => {
+        const key = item.name.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }).slice(0, count);
+    }
+
+    
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    async function generateAIContent(task, payload) {
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task, payload })
+      });
+
+      if (!response.ok) {
+        let message = 'AI zahtev nije uspeo.';
+        try {
+          const errorData = await response.json();
+          if (errorData?.error) message = errorData.error;
+        } catch (e) {}
+        throw new Error(message);
+      }
+
+      return response.json();
+    }
+
+    function buildNameCard(idea) {
+      return `
+        <div class="idea-name">${escapeHtml(idea.name)}</div>
+        <div class="pill-row">
+          <span class="pill">${escapeHtml(idea.vibe || '')}</span>
+          <span class="pill">${escapeHtml(idea.domainHint || '')}</span>
+        </div>
+        <div class="muted">${escapeHtml(idea.angle || '')} ${escapeHtml(idea.note || '')}</div>
+        <button class="copy-btn" data-copy="${escapeHtml(idea.name)}">Kopiraj ime</button>
+      `;
+    }
+
+    async function renderAIShopNames(randomMode = false) {
+      const product = (document.getElementById('productType')?.value || '').trim() || 'winning proizvod';
+      const audience = (document.getElementById('audience')?.value || '').trim() || 'online kupci';
+      const tone = (document.getElementById('tone')?.value) || 'modern';
+      const market = (document.getElementById('market')?.value) || 'balkans';
+      const results = document.getElementById('nameResults');
+      if (!results) return;
+      results.innerHTML = '<div class="tip-card"><h3>AI radi...</h3><div class="muted">Generišem unikatna imena za tvoj shop.</div></div>';
+
+      const data = await generateAIContent('shop_names', { product, audience, tone, market, randomMode });
+      const ideas = Array.isArray(data.ideas) ? data.ideas.slice(0, 6) : [];
+
+      if (!ideas.length) {
+        throw new Error('AI nije vratio imena.');
+      }
+
+      results.innerHTML = '';
+      ideas.forEach((idea) => {
+        const card = document.createElement('div');
+        card.className = 'idea-card';
+        card.innerHTML = buildNameCard(idea);
+        results.appendChild(card);
+      });
+    }
+
+    async function generateShopNames(randomMode = false) {
+      try {
+        await renderAIShopNames(randomMode);
+      } catch (error) {
+        console.warn('AI names fallback:', error);
+        generateShopNamesLocal(randomMode);
+      }
+    }
+
+function generateShopNamesLocal(randomMode = false) {
+      const product = (document.getElementById('productType')?.value || '').trim() || 'winning proizvod';
+      const audience = (document.getElementById('audience')?.value || '').trim() || 'online kupci';
+      const tone = (document.getElementById('tone')?.value) || 'modern';
+      const market = (document.getElementById('market')?.value) || 'balkans';
+      const results = document.getElementById('nameResults');
+      if (!results) return;
+      results.innerHTML = '';
+
+      const productWords = extractKeywords(product);
+      const audienceWords = extractKeywords(audience);
+      const tonePrefixes = prefixes[tone] || prefixes.modern;
+      const marketSuffixes = suffixes[market] || suffixes.balkans;
+
+      const softSuffixes = ['line', 'plus', 'point', 'lab', 'co', 'room', 'club', 'studio'];
+      const storeySuffixes = ['shop', 'zona', 'dom', 'kutak', 'world', 'place'];
+      const fallbackBases = ['Velora', 'Lumera', 'Novira', 'Zenora', 'Vantio', 'Elvora', 'Nexara', 'Solvra', 'Miravo', 'Aureli', 'Revano', 'Cavora'];
+
+      const rawSourceWords = [...new Set([...productWords, ...audienceWords, 'nova', 'trend', 'prime', 'smart'])].filter(Boolean);
+      const sourceWords = rawSourceWords.length ? rawSourceWords : ['nova', 'trend', 'prime'];
+
+      const candidates = [];
+
+      function addCandidate(name) {
+        name = brandify(name);
+        if (!name || name.length < 4) return;
+        if (/^[^a-zA-ZčćžšđČĆŽŠĐ]+$/.test(name)) return;
+        if (/\d/.test(name)) return;
+        if (/(shopshop|zonazona|domdom|storestore|hubhub)/i.test(name)) return;
+
+        const domainCore = name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9čćžšđ]/gi, '');
+        candidates.push({
+          name,
+          angle: `Dobar fit za ${tone === 'premium' ? 'premium' : tone === 'modern' ? 'moderan' : tone === 'minimal' ? 'minimalan' : tone === 'bold' ? 'agresivan' : 'pristupačan'} brand u niši: ${product}.`,
+          vibe: (vibeWords[tone] || vibeWords.modern).join(' • '),
+          domainHint: `${domainCore}.rs / .com`,
+          note: `Zvuči brandable i lako pamtljivo za publiku poput: ${audience}.`
+        });
+      }
+
+      for (let i = 0; i < 60; i++) {
+        const pref = tonePrefixes[Math.floor(Math.random() * tonePrefixes.length)] || 'Neo';
+        const suff = marketSuffixes[Math.floor(Math.random() * marketSuffixes.length)] || 'ora';
+        const soft = ['line', 'plus', 'point', 'lab', 'co', 'room', 'club', 'studio'][Math.floor(Math.random() * 8)];
+        const storey = ['shop', 'zona', 'dom', 'kutak', 'world', 'place'][Math.floor(Math.random() * 6)];
+        const baseWord = sourceWords[Math.floor(Math.random() * sourceWords.length)] || 'nova';
+        const secondWord = sourceWords[Math.floor(Math.random() * sourceWords.length)] || 'prime';
+
+        const rootA = makeBrandPart(baseWord) || 'nexa';
+        const rootB = makeAltBrandPart(secondWord) || 'via';
+        const shortA = rootA.slice(0, Math.max(3, Math.min(5, rootA.length)));
+        const shortB = rootB.slice(0, Math.max(2, Math.min(4, rootB.length)));
+
+        let name = '';
+
+        if (randomMode) {
+          const randomBase = fallbackBases[Math.floor(Math.random() * fallbackBases.length)];
+          const randomModeIndex = i % 5;
+          if (randomModeIndex === 0) name = randomBase;
+          if (randomModeIndex === 1) name = `${shortA}${storey}`;
+          if (randomModeIndex === 2) name = `${pref}${shortA}`;
+          if (randomModeIndex === 3) name = `${shortA}${suff}`;
+          if (randomModeIndex === 4) name = `${shortA}${soft}`;
+        } else {
+          const mode = i % 12;
+          if (mode === 0) name = `${pref}${rootA}${suff}`;
+          if (mode === 1) name = `${rootA}${suff}`;
+          if (mode === 2) name = `${pref}${rootB}`;
+          if (mode === 3) name = `${rootA}${rootB}`;
+          if (mode === 4) name = `${pref}${rootA}`;
+          if (mode === 5) name = `${shortA}${storey}`;
+          if (mode === 6) name = `${shortA}${soft}`;
+          if (mode === 7) name = `${shortA}${shortB}`;
+          if (mode === 8) name = `${shortA}${suff}${shortB.slice(0,2)}`;
+          if (mode === 9) name = `${pref}${shortA}${shortB.slice(0,2)}`;
+          if (mode === 10) name = `${shortA}${storey}${shortB.slice(0,1)}`;
+          if (mode === 11) name = `${pref}${shortA}${storey.slice(0,2)}`;
+        }
+
+        addCandidate(name);
+      }
+
+      let ideas = uniqueIdeas(candidates, 6);
+
+      if (ideas.length < 6) {
+        fallbackBases.forEach((name) => addCandidate(name));
+        ['Domera', 'Novadom', 'Velozona', 'Alunest', 'Nexadom', 'Luminza'].forEach((name) => addCandidate(name));
+        ideas = uniqueIdeas(candidates, 6);
+      }
+
+      ideas.forEach((idea) => {
+        const card = document.createElement('div');
+        card.className = 'idea-card';
+        card.innerHTML = `
+          <div class="idea-name">${idea.name}</div>
+          <div class="pill-row">
+            <span class="pill">${idea.vibe}</span>
+            <span class="pill">${idea.domainHint}</span>
+          </div>
+          <div class="muted">${idea.angle} ${idea.note}</div>
+          <button class="copy-btn" data-copy="${idea.name}">Kopiraj ime</button>
+        `;
+        results.appendChild(card);
+      });
+    }
+
+    document.getElementById('generateNamesBtn')?.addEventListener('click', () => generateShopNames(false));
+    document.getElementById('surpriseNamesBtn')?.addEventListener('click', () => generateShopNames(true));
+
+    function formatMoney(num) {
+      const value = Number(num || 0);
+      return new Intl.NumberFormat('sr-RS').format(Math.round(value));
+    }
+
+    document.getElementById('calcProfitBtn').addEventListener('click', () => {
+      const sellPrice = Number(document.getElementById('sellPrice').value || 0);
+      const productCost = Number(document.getElementById('productCost').value || 0);
+      const shippingCost = Number(document.getElementById('shippingCost').value || 0);
+      const adCost = Number(document.getElementById('adCost').value || 0);
+      const otherCost = Number(document.getElementById('otherCost').value || 0);
+      const returnRate = Number(document.getElementById('returnRate').value || 0) / 100;
+
+      const grossMargin = sellPrice - productCost - shippingCost;
+      const estimatedReturnLoss = sellPrice * returnRate;
+      const netProfit = sellPrice - productCost - shippingCost - adCost - otherCost - estimatedReturnLoss;
+      const profitMargin = sellPrice > 0 ? (netProfit / sellPrice) * 100 : 0;
+      const breakevenCPA = sellPrice - productCost - shippingCost - otherCost - estimatedReturnLoss;
+
+      document.getElementById('grossMargin').textContent = formatMoney(grossMargin);
+      document.getElementById('netProfit').textContent = formatMoney(netProfit);
+      document.getElementById('profitMargin').textContent = `${profitMargin.toFixed(1)}%`;
+      document.getElementById('breakevenCPA').textContent = formatMoney(breakevenCPA);
+
+      const netProfitEl = document.getElementById('netProfit');
+      const profitMarginEl = document.getElementById('profitMargin');
+      netProfitEl.className = netProfit >= 0 ? 'good' : 'bad';
+      profitMarginEl.className = profitMargin >= 15 ? 'good' : profitMargin >= 5 ? 'neutral' : 'bad';
+
+      let insight = '';
+      if (profitMargin >= 20) {
+        insight = 'Ovo izgleda zdravo za test. Imaš prostora za optimizaciju oglasa, upsell i malo lošije dane.';
+      } else if (profitMargin >= 10) {
+        insight = 'Može da prođe, ali bi bilo pametno da oboriš CPA ili povećaš AOV kroz bundle, quantity break ili upsell.';
+      } else if (profitMargin >= 0) {
+        insight = 'Na papiru si u plusu, ali vrlo tanko. Jedan lošiji CPA, više povrata ili skuplja dostava mogu lako da pojedu profit.';
+      } else {
+        insight = 'Ovo trenutno deluje neisplativo. Moraš da dižeš cenu, spuštaš troškove ili tražiš jači proizvod / ponudu.';
+      }
+
+      document.getElementById('profitInsight').innerHTML = `
+        <h3>Uvid</h3>
+        <div class="muted">Procena uključuje i uticaj povrata kao grubi korektiv. ${insight}</div>
+      `;
+    });
+
+    document.getElementById('validateNicheBtn').addEventListener('click', () => {
+      const problemLevel = Number(document.getElementById('problemLevel').value || 0);
+      const wowFactor = Number(document.getElementById('wowFactor').value || 0);
+      const marginLevel = Number(document.getElementById('marginLevel').value || 0);
+      const competitionLevel = Number(document.getElementById('competitionLevel').value || 0);
+      const repeatPotential = Number(document.getElementById('repeatPotential').value || 0);
+      const contentPotential = Number(document.getElementById('contentPotential').value || 0);
+
+      const weighted = (
+        problemLevel * 2.0 +
+        wowFactor * 1.5 +
+        marginLevel * 1.8 +
+        (11 - competitionLevel) * 1.7 +
+        repeatPotential * 1.2 +
+        contentPotential * 1.8
+      );
+
+      const maxWeighted = (10*2.0 + 10*1.5 + 10*1.8 + 10*1.7 + 10*1.2 + 10*1.8);
+      const score = Math.max(0, Math.min(100, (weighted / maxWeighted) * 100));
+
+      document.getElementById('nicheScore').textContent = `${Math.round(score)}/100`;
+      document.getElementById('scoreFill').style.width = `${score}%`;
+
+      let summary = '';
+      if (score >= 75) summary = 'Ovo izgleda kao vrlo obećavajuća niša za test ili fokusiran brand.';
+      else if (score >= 55) summary = 'Niša ima potencijal, ali traži pažljivo pozicioniranje i dobru kreativu.';
+      else summary = 'Za sada deluje slabije. Možda proizvod nije dovoljno jak ili je konkurencija prejaka.';
+
+      document.getElementById('scoreSummary').textContent = summary;
+
+      const checklist = [];
+      checklist.push(problemLevel >= 7 ? '✅ Proizvod rešava dovoljno jak problem.' : '⚠️ Problem koji rešava možda nije dovoljno bolan za agresivnu kupovinu.');
+      checklist.push(wowFactor >= 7 ? '✅ Ima dobar potencijal za scroll-stopping kreativni ugao.' : '⚠️ Moraćeš više da se osloniš na copy i offer, manje na viralnost.');
+      checklist.push(marginLevel >= 7 ? '✅ Marža izgleda zdravo za ads i optimizaciju.' : '⚠️ Marža deluje tanje; razmisli o bundle-u ili višoj prodajnoj ceni.');
+      checklist.push(competitionLevel <= 5 ? '✅ Konkurencija ne deluje ubitačno.' : '⚠️ Konkurencija je ozbiljna; moraš imati bolji angle, branding ili funnel.');
+      checklist.push(repeatPotential >= 6 ? '✅ Postoji prostor za repeat kupovinu ili upsell.' : '⚠️ Deluje više kao one-time purchase proizvod, pa acquisition mora biti efikasan.');
+      checklist.push(contentPotential >= 7 ? '✅ Lako se pretvara u oglase, UGC, hooks i demonstracije.' : '⚠️ Kreativno može biti teže izvući dovoljno zanimljivih uglova.');
+
+      document.getElementById('nicheChecklist').innerHTML = checklist.map(item => `<div class="check">${item}</div>`).join('');
+    });
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function pickOne(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function wordCount(text) {
+      return text.trim().split(/\s+/).filter(Boolean).length;
+    }
+
+    function cleanText(value) {
+      return (value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function sanitizeBenefits(lines) {
+      return lines
+        .map(line => cleanText(line.replace(/^[-•\d.)\s]+/, '')))
+        .filter(Boolean);
+    }
+
+    function joinNatural(items) {
+      if (!items.length) return '';
+      if (items.length === 1) return items[0];
+      if (items.length === 2) return `${items[0]} i ${items[1]}`;
+      return `${items.slice(0, -1).join(', ')} i ${items[items.length - 1]}`;
+    }
+
+    function makeBulletBlock(benefits) {
+      return benefits.map(item => `• ${item.charAt(0).toUpperCase() + item.slice(1)}`).join('\n');
+    }
+
+    function generateBenefitParagraph(product, benefit, tone) {
+      const starts = [
+        `Jedna od stvari koja posebno izdvaja ${product} jeste ${benefit}.`,
+        `Posebnu vrednost ovom proizvodu daje ${benefit}.`,
+        `Kada se pomene ${benefit}, odmah postaje jasno zašto ${product} ostavlja bolji utisak od običnih alternativa.`,
+        `${benefit.charAt(0).toUpperCase() + benefit.slice(1)} je benefit koji kupac lako prepoznaje već pri prvom pogledu na proizvod.`,
+        `Važna prednost proizvoda ${product} je i ${benefit}.`
+      ];
+
+      const continuations = {
+        prodajni: [
+          `To znači da kupac ne dobija samo još jedan proizvod, već rešenje koje odmah deluje korisno, jasno i praktično.`,
+          `Upravo ovakve stavke često presude kada kupac odlučuje da li će samo pogledati proizvod ili će zaista preći na poručivanje.`,
+          `Kada je korist ovako jasna, mnogo je lakše opravdati kupovinu i steći utisak da proizvod zaista vredi svog mesta u domu, automobilu ili svakodnevnoj rutini.`
+        ],
+        premium: [
+          `Takav detalj doprinosi osećaju kvaliteta i pokazuje da proizvod nije napravljen površno, već sa fokusom na stvarno iskustvo korišćenja.`,
+          `Zbog toga ${product} deluje ozbiljnije, promišljenije i mnogo vrednije u očima kupca koji traži više od prosečnog rešenja.`,
+          `Upravo ovakve karakteristike grade premium utisak i pomažu da ceo proizvod deluje sigurnije i kvalitetnije.`
+        ],
+        direktan: [
+          `Kupcu je odmah jasno šta dobija i zašto mu to može koristiti u praksi.`,
+          `Nema komplikovanja, nema prazne priče — korist je jasna i lako razumljiva.`,
+          `Baš zato proizvod deluje smisleno i lakše prolazi test prve reakcije kupca.`
+        ],
+        topao: [
+          `Na taj način proizvod unosi više lakoće i manje nerviranja u svakodnevne situacije.`,
+          `Takva osobina pomaže da korišćenje bude prijatnije, jednostavnije i prirodnije iz dana u dan.`,
+          `Zbog toga ${product} ne deluje kao prolazna sitnica, već kao nešto što zaista može da olakša rutinu.`
+        ]
+      };
+
+      return `${pickOne(starts)} ${pickOne(continuations[tone] || continuations.prodajni)}`;
+    }
+
+    
+    async function generateProductCopy() {
+      const product = cleanText(document.getElementById('copyProduct').value) || 'magnetni držač telefona';
+      const audienceInput = cleanText(document.getElementById('copyAudience').value) || 'svakodnevnu upotrebu kod kuće, na poslu ili u pokretu';
+      const angle = cleanText(document.getElementById('copyAngle').value) || 'praktičnost, jednostavno korišćenje i jasan efekat već od prvog korišćenja';
+      const tone = document.getElementById('copyTone').value;
+
+      const rawBenefits = sanitizeBenefits(
+        document.getElementById('copyBenefits').value.split('\n')
+      );
+
+      const defaultBenefits = [
+        'jednostavna upotreba bez komplikacija',
+        'brza i laka primena u svakodnevnim situacijama',
+        'atraktivan efekat koji odmah privlači pažnju',
+        'praktično rešenje koje štedi vreme',
+        'funkcionalnost koja olakšava korišćenje',
+        'veći komfor i bolji utisak tokom upotrebe'
+      ];
+
+      const benefits = rawBenefits.length ? rawBenefits : defaultBenefits;
+      const selectedBenefits = shuffleArray(benefits).slice(0, Math.min(6, benefits.length));
+      const outputEl = document.getElementById('copyOutput');
+      outputEl.value = 'AI piše opis proizvoda...';
+
+      try {
+        const data = await generateAIContent('product_copy', {
+          product,
+          audience: audienceInput,
+          angle,
+          tone,
+          benefits: selectedBenefits
+        });
+
+        if (!data?.text) {
+          throw new Error('AI nije vratio opis.');
+        }
+
+        outputEl.value = data.text;
+      } catch (error) {
+        console.warn('AI copy fallback:', error);
+        generateProductCopyLocal();
+      }
+    }
+
+function generateProductCopyLocal() {
+      const product = cleanText(document.getElementById('copyProduct').value) || 'magnetni držač telefona';
+      const audienceInput = cleanText(document.getElementById('copyAudience').value) || 'svakodnevnu upotrebu kod kuće, na poslu ili u pokretu';
+      const angle = cleanText(document.getElementById('copyAngle').value) || 'praktičnost, jednostavno korišćenje i jasan efekat već od prvog korišćenja';
+      const tone = document.getElementById('copyTone').value;
+
+      const rawBenefits = sanitizeBenefits(
+        document.getElementById('copyBenefits').value.split('\n')
+      );
+
+      const defaultBenefits = [
+        'jednostavna upotreba bez komplikacija',
+        'brza i laka primena u svakodnevnim situacijama',
+        'atraktivan efekat koji odmah privlači pažnju',
+        'praktično rešenje koje štedi vreme',
+        'funkcionalnost koja olakšava korišćenje',
+        'veći komfor i bolji utisak tokom upotrebe'
+      ];
+
+      const benefits = rawBenefits.length ? rawBenefits : defaultBenefits;
+      const selectedBenefits = shuffleArray(benefits).slice(0, Math.min(6, benefits.length));
+
+      const intros = {
+        prodajni: [
+          `${product} je proizvod koji na prvi pogled privlači pažnju, ali njegov pravi kvalitet dolazi do izražaja tek kada se vidi koliko može da olakša upotrebu i unapredi svakodnevno iskustvo.`,
+          `Ako tražiš proizvod koji spaja ${angle} i jasno pokazuje svoju vrednost čim počne da se koristi, ${product} je izbor koji veoma brzo opravda pažnju kupca.`,
+          `${product} je osmišljen tako da ponudi više od obične funkcije — donosi osećaj praktičnosti, lakše svakodnevice i jasan razlog zašto bi neko poželeo da ga ima baš sada.`
+        ],
+        premium: [
+          `${product} donosi spoj funkcionalnosti, dopadljivog izgleda i osećaja kvaliteta koji se prepoznaje već pri prvom kontaktu sa proizvodom.`,
+          `Kada proizvod uspe da spoji ${angle} sa ozbiljnim utiskom i jednostavnom upotrebom, rezultat je rešenje kao što je ${product}, koje deluje promišljeno i vredno pažnje.`,
+          `${product} je napravljen za one koji žele više od prosečnog proizvoda — žele rešenje koje deluje kvalitetno, korisno i dovoljno upečatljivo da odmah ostavi pravi utisak.`
+        ],
+        direktan: [
+          `${product} je tu da jasno pokaže svoju svrhu: da olakša korišćenje, unapredi iskustvo i donese rezultat bez komplikacija.`,
+          `Kod proizvoda kao što je ${product}, najvažnije je da odmah bude jasno šta radi i zašto vredi. Ovde je to potpuno očigledno već od prvog opisa.`,
+          `Ako kupac traži proizvod koji radi posao bez nepotrebnog objašnjavanja, ${product} je upravo takva vrsta rešenja.`
+        ],
+        topao: [
+          `${product} je osmišljen da unese više lakoće, više uživanja i manje napora u svakodnevne situacije u kojima praktičnost i dobar osećaj prave veliku razliku.`,
+          `Postoje proizvodi koji samo izgledaju lepo, a postoje i oni koji zaista doprinesu svakodnevici. ${product} pripada ovoj drugoj grupi jer donosi više komfora, više jednostavnosti i lepši osećaj pri korišćenju.`,
+          `${product} je odličan izbor za sve koji vole da male stvari u toku dana učine jednostavnijim, prijatnijim i vizuelno lepšim.`
+        ]
+      };
+
+      const secondParagraphs = [
+        `Napravljen je tako da se lako uklopi u ${audienceInput}. Umesto komplikovanih rešenja i proizvoda koji traže dodatno objašnjavanje, ovde dobijaš nešto što već na prvi pogled deluje jasno, korisno i spremno za upotrebu. Upravo to je razlog zbog kog ${product} može tako lako da privuče pažnju i ostavi utisak proizvoda koji ima stvarnu svrhu.`,
+        `${product} je posebno zanimljiv svima koji žele proizvod koji se lako uklapa u ${audienceInput}. Njegova prednost nije samo u tome što dobro izgleda na stranici, već u tome što kupac vrlo brzo može da zamisli kako mu koristi u praksi i zašto bi ga poželeo u svom prostoru, rutini ili svakodnevnim navikama.`,
+        `Ovaj proizvod je odlična opcija za situacije kao što su ${audienceInput}. Njegova upotreba deluje prirodno, jednostavno i dovoljno jasno da kupac odmah može da prepozna gde leži vrednost i zbog čega je baš ovakav tip proizvoda smislen izbor.`
+      ];
+
+      const featureIntroBlocks = [
+        `Ono što posebno izdvaja ${product} jeste kombinacija koristi koje kupcu odmah imaju smisla. Umesto generičnih obećanja, ovde su prednosti vrlo konkretne i lako razumljive:`,
+        `${product} se izdvaja jer nije zasnovan samo na jednom benefitu, već na spoju više korisnih karakteristika koje zajedno daju jači utisak i bolji rezultat u svakodnevnoj upotrebi:`,
+        `Jedan od glavnih razloga zbog kojih ${product} ostavlja dobar utisak jeste to što spaja više važnih prednosti u jednom rešenju:`
+      ];
+
+      const lifestyleParagraphs = [
+        `Kada se koristi u praksi, ${product} ne deluje kao još jedan prolazan gadžet ili dekorativni detalj bez svrhe. Naprotiv, vrlo brzo pokazuje da iza dobrog izgleda stoji i realna funkcionalnost. To je posebno važno danas, kada kupci žele da znaju da proizvod koji naručuju zaista može da opravda svoje mesto u svakodnevnoj rutini.`,
+        `Velika prednost ovog proizvoda je i to što ne traži mnogo prilagođavanja. Ljudi najviše vole rešenja koja mogu odmah da razumeju i koriste bez osećaja da moraju dodatno da uče, nameštaju ili eksperimentišu. Upravo zato ${product} ostavlja utisak proizvoda koji je i praktičan i prijatan za korišćenje.`,
+        `${product} veoma lako ulazi u svakodnevnu upotrebu jer ne zahteva komplikovan pristup. Jasna namena, jednostavan koncept i dopadljiv rezultat čine da kupac već kroz prvi utisak oseti da dobija nešto što nije samo zanimljivo, već i korisno.`
+      ];
+
+      const closingParagraphs = {
+        prodajni: [
+          `Ako želiš proizvod koji spaja ${angle} sa jasnim razlogom za kupovinu, ${product} je odlična opcija. Lako privlači pažnju, još lakše se uklapa u svakodnevicu i ostavlja utisak da kupac dobija više vrednosti nego što očekuje na prvi pogled.`,
+          `Sve u svemu, ${product} je proizvod koji uspeva da spoji dobar prvi utisak sa stvarnom korisnošću. Kada se tome dodaju njegove praktične prednosti i lakoća korišćenja, dobija se ponuda koja deluje ozbiljno, jasno i spremno za kupovinu.`
+        ],
+        premium: [
+          `${product} je proizvod koji uspešno spaja dobar izgled, osećaj kvaliteta i realnu funkcionalnost. Upravo zato ostavlja ozbiljniji, vredniji i ubedljiviji utisak već pri prvom susretu sa proizvodom.`,
+          `Za kupca koji traži više od običnog proizvoda, ${product} predstavlja rešenje koje deluje promišljeno, kvalitetno i dovoljno upečatljivo da opravda pažnju i izazove želju za kupovinom.`
+        ],
+        direktan: [
+          `Suština je jednostavna: ${product} radi ono što kupac želi, izgleda dovoljno dobro da privuče pažnju i dovoljno je jasan da ne traži dodatno ubeđivanje.`,
+          `Ako je cilj pronaći proizvod koji odmah pokazuje korist i ne komplikuje iskustvo korišćenja, ${product} je veoma konkretan i logičan izbor.`
+        ],
+        topao: [
+          `${product} donosi više lakoće, više lepog utiska i više jednostavnosti u situacije u kojima sitnice prave veliku razliku. Zato lako osvaja pažnju i ostavlja prijatan utisak od prvog korišćenja.`,
+          `Kada proizvod uspe da spoji koristan efekat, jednostavnu upotrebu i lep osećaj pri korišćenju, on postaje mnogo više od obične kupovine. Upravo to je utisak koji ${product} ostavlja.`
+        ]
+      };
+
+      const descriptionTitleVariants = [
+        `${product} – opis proizvoda`,
+        `${product} – spoj praktičnosti i efekta`,
+        `${product} – rešenje koje odmah pravi utisak`,
+        `${product} – pametan izbor za svakodnevnu upotrebu`
+      ];
+
+      const benefitParagraphs = selectedBenefits.map(benefit => generateBenefitParagraph(product, benefit, tone));
+
+      let outputParts = [];
+      outputParts.push(pickOne(descriptionTitleVariants));
+      outputParts.push('');
+      outputParts.push(pickOne(intros[tone] || intros.prodajni));
+      outputParts.push('');
+      outputParts.push(pickOne(secondParagraphs));
+      outputParts.push('');
+      outputParts.push(pickOne(featureIntroBlocks));
+      outputParts.push(makeBulletBlock(selectedBenefits));
+      outputParts.push('');
+      outputParts.push(benefitParagraphs.join('\n\n'));
+      outputParts.push('');
+      outputParts.push(pickOne(lifestyleParagraphs));
+      outputParts.push('');
+      outputParts.push(pickOne(closingParagraphs[tone] || closingParagraphs.prodajni));
+
+      let output = outputParts.join('\n');
+
+      while (wordCount(output) < 500) {
+        const extras = shuffleArray([
+          ...benefitParagraphs,
+          ...lifestyleParagraphs,
+          ...secondParagraphs,
+          ...closingParagraphs[tone]
+        ]);
+
+        for (const extra of extras) {
+          if (wordCount(output) >= 500) break;
+          if (!output.includes(extra)) {
+            output += `\n\n${extra}`;
+          }
+        }
+
+        if (wordCount(output) < 500) {
+          output += `\n\n${product} je upravo ona vrsta proizvoda koja lako privlači pažnju, ali još važnije — uspeva da je zadrži zahvaljujući jasnoj koristi, jednostavnoj upotrebi i utisku da kupac dobija nešto što zaista može da mu koristi u svakodnevnim situacijama. Zbog toga ovaj proizvod deluje mnogo ozbiljnije, vrednije i ubedljivije nego generična rešenja koja nemaju jasno definisanu prednost.`;
+        }
+      }
+
+      document.getElementById('copyOutput').value = output;
+    }
+
+    document.getElementById('generateCopyBtn').addEventListener('click', generateProductCopy);
+
+    function lockNumericFields() {
+      const numericFields = document.querySelectorAll('#profit input[type="number"], #niche input[type="number"]');
+      numericFields.forEach((field) => {
+        field.setAttribute('inputmode', 'decimal');
+        field.setAttribute('autocomplete', 'off');
+
+        field.addEventListener('input', () => {
+          let value = field.value.replace(/,/g, '.');
+          value = value.replace(/[^0-9.]/g, '');
+          const parts = value.split('.');
+          if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+          }
+          field.value = value;
+        });
+
+        field.addEventListener('keydown', (e) => {
+          const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', '.'];
+          if (allowed.includes(e.key) || /^[0-9]$/.test(e.key)) return;
+          e.preventDefault();
+        });
+
+        field.addEventListener('paste', (e) => {
+          const text = (e.clipboardData || window.clipboardData).getData('text');
+          if (!/^[0-9., ]+$/.test(text)) {
+            e.preventDefault();
+          }
+        });
+      });
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        console.warn('Copy failed', e);
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('.copy-btn')) {
+        copyText(e.target.dataset.copy);
+        e.target.textContent = 'Kopirano';
+        setTimeout(() => e.target.textContent = 'Kopiraj ime', 1400);
+      }
+    });
+
+    document.getElementById('copyOutputBtn').addEventListener('click', async () => {
+      const text = document.getElementById('copyOutput').value;
+      await copyText(text);
+      const btn = document.getElementById('copyOutputBtn');
+      const old = btn.textContent;
+      btn.textContent = 'Opis kopiran';
+      setTimeout(() => btn.textContent = old, 1400);
+    });
+
+    lockNumericFields();
+    generateShopNames(true);
+  </script>
 </body>
 </html>
