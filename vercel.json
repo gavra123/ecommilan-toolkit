@@ -1,7 +1,7 @@
 {
-  "functions": {
-    "api/ai.js": {
-      "maxDuration": 30
-    }
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": null
 }
