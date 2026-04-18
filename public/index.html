@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<title>Ecommilan Tool</title>
+</head>
+
+<body style="background:#111;color:white;font-family:sans-serif;padding:40px">
+
+<h1>AI Tool</h1>
+
+<h3>Generator imena</h3>
+<input id="product" placeholder="proizvod"><br><br>
+<button onclick="genName()">Generiši</button>
+<pre id="nameOut"></pre>
+
+<hr>
+
+<h3>Opis proizvoda</h3>
+<input id="copyProduct" placeholder="naziv"><br><br>
+<button onclick="genCopy()">Napiši opis</button>
+<pre id="copyOut"></pre>
+
+<script>
+async function callAI(prompt) {
+  const res = await fetch("/api/ai", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ prompt })
+  });
+
+  const data = await res.json();
+  return data.text;
+}
+
+async function genName() {
+  const product = document.getElementById("product").value;
+
+  const prompt = `Daj 5 imena za ecommerce shop za ${product}`;
+
+  const text = await callAI(prompt);
+
+  document.getElementById("nameOut").textContent = text;
+}
+
+async function genCopy() {
+  const product = document.getElementById("copyProduct").value;
+
+  const prompt = `Napiši prodajni opis proizvoda: ${product}`;
+
+  const text = await callAI(prompt);
+
+  document.getElementById("copyOut").textContent = text;
+}
+</script>
+
+</body>
+</html>
