@@ -1,10 +1,14 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { prompt } = req.body;
+    const { task, payload } = req.body;
+
+    const prompt = task === "product_copy"
+      ? `Napiši prodajni opis proizvoda: ${payload.product}`
+      : `Daj 5 imena za shop koji prodaje: ${payload.product}`;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -13,19 +17,22 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
+        model: "gpt-4.1-mini",
         input: prompt
       })
     });
 
     const data = await response.json();
 
-    const text =
-      data.output?.[0]?.content?.[0]?.text ||
-      "Greška pri generisanju.";
+    const text = data.output_text || "Nema odgovora";
 
-    res.status(200).json({ text });
+    if (task === "product_copy") {
+      return res.status(200).json({ text });
+    } else {
+      return res.status(200).json({ ideas: [{ name: text }] });
+    }
+
   } catch (err) {
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message });
   }
 }
